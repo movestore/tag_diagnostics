@@ -1,4 +1,11 @@
 {
-    "sdk": "MoveApps R SDK",
-    "year": 2014
+    "plot_nb_lcs":true,
+    "add_vot":false,
+  "bat_attr":null,
+  "plot_fix_rate":true,
+  "unts_fix_rate":"min",
+  "attr_line":null,
+  "attr_boxplot":null,
+  "use_local_time":true,
+  "pdfMode":"perAttrib"
 }

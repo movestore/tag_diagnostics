@@ -55,18 +55,21 @@ rFunction <- function(data,
   ## check bat attr name
   batvot_ok <- bat_attr[bat_attr %in% names(data)]
   ## check line attr name  
+  if(!is.null(attr_line)){
   attr_line_L <- strsplit(attr_line, ",")[[1]]
   attr_line_L <- gsub(" ", "", attr_line_L, fixed = TRUE)
   attr_line_ok <- attr_line_L[attr_line_L %in% names(data)]
   attr_line_error <- attr_line_L[!attr_line_L %in% names(data)]
   if (length(attr_line_error) > 0) {logger.info(paste0("Warning! Your defined attributes: ",paste0('"',attr_line_error,'"', collapse = ", ")," do not exist in the data set. They will not be plotted."))}
-  ## check boxplot attr name  
+  }else{attr_line_ok <- NULL}
+  ## check boxplot attr name 
+  if(!is.null(attr_boxplot)){
   attr_boxplot_L <- strsplit(attr_boxplot, ",")[[1]]
   attr_boxplot_L <- gsub(" ", "", attr_boxplot_L, fixed = TRUE)
   attr_boxplot_ok <- attr_boxplot_L[attr_boxplot_L %in% names(data)]
   attr_boxplot_error <- attr_boxplot_L[!attr_boxplot_L %in% names(data)]
   if (length(attr_boxplot_error) > 0) {logger.info(paste0("Warning! Your defined attributes: ",paste0('"',attr_boxplot_error,'"', collapse = ", ")," do not exist in the data set. They will not be plotted."))}
-  
+  }else{attr_boxplot_ok <- NULL}
   
   data_L <- split(data, mt_track_id(data))
   
@@ -143,6 +146,7 @@ rFunction <- function(data,
     }
     
     ## other attr lines
+    if(!is.null(attr_line_ok)){
     ggtrk_all_ls <- lapply(seq_along(attr_line_ok), function(i) {
       atr <- attr_line_ok[i]
       ggplot(trk) + 
@@ -153,8 +157,10 @@ rFunction <- function(data,
         theme_bw()
     })
     names(ggtrk_all_ls) <- paste0(attr_line_ok, "_line")
+    }else{ggtrk_all_ls <- NULL}
     
     ## other attr boxplot
+    if(!is.null(attr_boxplot_ok)){
     ggtrk_all_bx <- lapply(seq_along(attr_boxplot_ok), function(i) {
       atr <- attr_boxplot_ok[i]
       ggplot(trk) + 
@@ -165,7 +171,7 @@ rFunction <- function(data,
         theme_bw()
     })
     names(ggtrk_all_bx) <- paste0(attr_boxplot_ok, "_box")
-    
+    }else{ggtrk_all_bx <- NULL}
     # return as a named list
     c(list(nb_volt = nb_volt, fixrt   = fixrt), ggtrk_all_ls, ggtrk_all_bx)
   }
@@ -195,7 +201,7 @@ rFunction <- function(data,
     # all_pages is a list of "grob lists"; bind them
     # all_pages <- do.call(c, all_pages)
     
-    ggsave("tag_diagnostics_plots.pdf", all_pages, width = 10, height = 10)
+    ggsave(appArtifactPath("tag_diagnostics_plots.pdf"), all_pages, width = 10, height = 10)
     
   } else if (pdfMode == "perAttrib") {
     
@@ -237,7 +243,7 @@ rFunction <- function(data,
     all_pages <- pages_by_key#do.call(c, pages_by_key)
     
     if (length(all_pages) > 0) {
-      ggsave("tag_diagnostics_plots.pdf", all_pages, width = 10, height = 10)
+      ggsave(appArtifactPath("tag_diagnostics_plots.pdf"), all_pages, width = 10, height = 10)
     } else {
       warning("No plots available for perAttrib pdfMode.")
     }

@@ -2,76 +2,126 @@
   "version": "1.2",
   "settings": [
     {
-      "id": "sdk",
-      "name": "The name of the MoveApps SDK",
-      "description": "Showcase requesting a string input from the users of your app.",
-      "defaultValue": "MoveApps SDK",
+  "id": "plot_nb_lcs",
+  "name": "Plot number of locations per day",
+  "description" :"",   
+  "defaultValue": true,
+  "type": "CHECKBOX"
+},
+{
+  "id": "add_vot",
+  "name": "Add battery voltage to previous plot",
+  "description" :"",  
+  "defaultValue": false,
+  "type": "CHECKBOX"
+},
+{
+      "id": "bat_attr",
+      "name": "Column name of battery voltage in the data set",
+      "description": "Provide the exact name of the column containing the battery voltage. If unsure of attribute names or spelling, please run the first App in your workflow and check the 'event_attributes' in the 'App Output Details' (green 'i'). For definitions of Movebank attributes please refer to the Movebank Attribute Dictionary (https://www.movebank.org/cms/movebank-content/movebank-attribute-dictionary).",
+      "defaultValue": null,
       "type": "STRING"
+	},
+{
+  "id": "plot_fix_rate",
+  "name": "Plot fix rate (approximation)",
+  "description" :"",  
+  "defaultValue": true,
+  "type": "CHECKBOX"
+},
+ {
+  "id": "unts_fix_rate",
+  "name": "Units to calculate fix rate",
+  "description": "Choose units to calculate the fix rate",
+  "type": "RADIOBUTTONS",
+  "defaultValue": "mins",
+  "options": [{
+      "value": "secs",
+      "displayText": "Seconds"
     },
     {
-      "id": "year",
-      "name": "The year",
-      "description": "Insert description for the year setting setting",
-      "defaultValue": 2022,
-      "type": "INTEGER"
+      "value": "mins",
+      "displayText": "Minutes"
     },
     {
-      "id": "auxiliary-file-a",
-      "name": "Personalization",
-      "description": "You can personalize the app by providing a file",
-      "type": "USER_FILE"
-    }
+      "value": "hours",
+      "displayText": "Hours"
+    },
+    {
+      "value": "days",
+      "displayText": "Days"
+    }]
+ },
+{
+      "id": "attr_line",
+      "name": "Additional attributes to plot as lines",
+      "description": "Provide the exact names of the data attributes that you want to plot (must be comma-separated! and without quotes). If unsure of attribute names or spelling, please run the first App in your workflow and check the 'event_attributes' in the 'App Output Details' (green 'i'). For definitions of Movebank attributes please refer to the Movebank Attribute Dictionary (https://www.movebank.org/cms/movebank-content/movebank-attribute-dictionary).",
+      "defaultValue": null,
+      "type": "STRING"
+	},
+{
+      "id": "attr_boxplot",
+      "name": "Additional attributes to plot as a boxplot per day",
+      "description": "Provide the exact names of the data attributes that you want to plot (must be comma-separated! and without quotes). If unsure of attribute names or spelling, please run the first App in your workflow and check the 'event_attributes' in the 'App Output Details' (green 'i'). For definitions of Movebank attributes please refer to the Movebank Attribute Dictionary (https://www.movebank.org/cms/movebank-content/movebank-attribute-dictionary).",
+      "defaultValue": null,
+      "type": "STRING"
+	},
+	{
+  "id": "use_local_time",
+  "name": "Use local time to be displayed on the plot",
+    "description" :"",  
+  "defaultValue": true,
+  "type": "CHECKBOX"
+},  
+{
+  "id": "pdfMode",
+  "name": "Structure of pdf",
+  "description": "",
+  "defaultValue": "perTrack",
+  "type": "RADIOBUTTONS",
+  "options": [{
+      "value": "perTrack",
+      "displayText": "Create pdf grouping plot per track" 
+    },
+    {
+      "value": "perAttrib",
+      "displayText": "Create pdf grouping plots per attribute"
+    }]
+} 
   ],
   "dependencies": {
     "R": [
-      {
-        "name": "lubridate"
-      },
-      {
-        "remotes": "install_git('https://gitlab.com/bartk/move2.git')"
-      }
+      {"name": "move2"},
+      {"name": "dplyr"},
+      {"name": "ggplot2"},
+      {"name": "gridExtra"},
+      {"name": "sf"},
+      {"name": "lutz"},
+      {"name": "rlang"},
+      {"name": "units"},
+      {"name": "lubridate"}
     ]
   },
-  "providedAppFiles": [
-    {
-      "settingId": "auxiliary-file-a",
-      "from": "data/auxiliary/user-files/provided-app-files/auxiliary-file-a/sample.txt"
-    }
-  ],
   "license": {
     "key": "MIT"
   },
   "language": "eng",
   "keywords": [
-    "example",
-    "template"
+    "tag",
+    "collar",
+    "diagnostics",
+    "monitoring"
   ],
   "people": [
     {
-      "firstName": "Charles",
-      "middleInitials": null,
-      "lastName": "Darwin",
-      "email": "creator@example.com",
-      "roles": [
-        "author",
-        "creator"
-      ],
+      "firstName": "Anne",
+      "middleInitials": "K",
+      "lastName": "Scharf",
+      "email": "ascharf@ab.mpg.de",
+      "roles": ["creator","author"],
       "orcid": null,
-      "affiliation": null,
-      "affiliationRor": null
-    }
-  ],
-  "funding": [
-    {
-      "name": "funder name",
-      "comment": "grant for App"
-    }
-  ],
-  "references": [
-    {
-      "type": "IsDescribedBy",
-      "note": "Darwin, C. 1900. The creation. Journal XY. 1-2",
-      "url": "https://anylink.xyz"
+      "affiliation": "Max-Planck-Institute of Animal Behavior",
+      "affiliationRor": "https://ror.org/026stee22"
     }
   ]
 }

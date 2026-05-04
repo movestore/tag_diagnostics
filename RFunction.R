@@ -39,10 +39,30 @@ library(lubridate)
 # pdfMode <- "perAttrib" #"perTrack" "perAttrib"
 # pdf_file <- "plots_per_attribute.pdf"#"plots_per_attribute.pdf" plots_per_track.pdf
 
+voc <- movebank_get_vocabulary()
+names(voc[grep("voltage",voc)])
+
+"tag_voltage"
+"eobs_battery_voltage"
+"solar_cell_voltage"  
+
+"battery_charging_voltage"
+"eobs_fix_battery_voltage"
+"solar_voltage_percent"
+"tag_backup_voltage"
+"tinyfox_sunny_index_start_voltage"
+"tinyfox_sunny_index_voltage_increase"
+"voltage_resolution"
+
+
+names(voc[grep("mV",voc)])
+
+
 
 rFunction <- function(data,
                       plot_nb_lcs,
                       add_vot,
+                     # bat_attr_prov,
                       bat_attr,
                       plot_fix_rate,
                       unts_fix_rate,

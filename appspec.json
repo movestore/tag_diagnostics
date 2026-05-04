@@ -16,6 +16,53 @@
   "type": "CHECKBOX"
 },
 {
+  "id": "bat_attr_prov",
+  "name": "Choose the attibute containing battery voltage",
+  "description": "If you cannot find the right attribute name here, please use the free text below",
+  "type": "DROPDOWN",
+  "defaultValue": "",
+  "options": [{
+      "value": "",
+      "displayText": ""
+    },
+    {
+      "value": "tag_voltage",
+      "displayText": "tag_voltage"
+    },
+    {
+      "value": "eobs_battery_voltage",
+      "displayText": "eobs_battery_voltage"
+    },
+    {
+      "value": "solar_cell_voltage",
+      "displayText": "solar_cell_voltage"
+    },
+    {
+      "value": "battery_charging_voltage",
+      "displayText": "battery_charging_voltage"
+    },
+    {
+      "value": "eobs_fix_battery_voltage",
+      "displayText": "eobs_fix_battery_voltage"
+    },
+    {
+      "value": "tag_backup_voltage",
+      "displayText": "tag_backup_voltage"
+    },
+    {
+      "value": "tinyfox_sunny_index_start_voltage",
+      "displayText": "tinyfox_sunny_index_start_voltage"
+    },
+    {
+      "value": "tinyfox_sunny_index_voltage_increase",
+      "displayText": "tinyfox_sunny_index_voltage_increase"
+    },
+    {
+      "value": "voltage_resolution",
+      "displayText": "voltage_resolution"
+    }]
+ },
+{
       "id": "bat_attr",
       "name": "Column name of battery voltage in the data set",
       "description": "Provide the exact name of the column containing the battery voltage. If unsure of attribute names or spelling, please run the first App in your workflow and check the 'event_attributes' in the 'App Output Details' (green 'i'). For definitions of Movebank attributes please refer to the Movebank Attribute Dictionary (https://www.movebank.org/cms/movebank-content/movebank-attribute-dictionary).",

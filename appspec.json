@@ -74,7 +74,7 @@
   "name": "Units to calculate fix rate",
   "description": "Choose units to calculate the fix rate",
   "type": "RADIOBUTTONS",
-  "defaultValue": "mins",
+  "defaultValue": "min",
   "options": [{
       "value": "sec",
       "displayText": "Seconds"

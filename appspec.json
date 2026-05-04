@@ -76,19 +76,19 @@
   "type": "RADIOBUTTONS",
   "defaultValue": "mins",
   "options": [{
-      "value": "secs",
+      "value": "sec",
       "displayText": "Seconds"
     },
     {
-      "value": "mins",
+      "value": "min",
       "displayText": "Minutes"
     },
     {
-      "value": "hours",
+      "value": "hour",
       "displayText": "Hours"
     },
     {
-      "value": "days",
+      "value": "day",
       "displayText": "Days"
     }]
  },
@@ -121,11 +121,11 @@
   "type": "RADIOBUTTONS",
   "options": [{
       "value": "perTrack",
-      "displayText": "Group plots per track" 
+      "displayText": "Group plots by track" 
     },
     {
       "value": "perAttrib",
-      "displayText": "Group plots per attribute"
+      "displayText": "Group plots by attribute"
     }]
 } 
   ],

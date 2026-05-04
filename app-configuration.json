@@ -1,11 +1,11 @@
 {
-    "plot_nb_lcs":true,
-    "add_vot":false,
+  "plot_nb_lcs":true,
+  "bat_attr_prov":"eobs_battery_voltage",
   "bat_attr":null,
   "plot_fix_rate":true,
   "unts_fix_rate":"min",
-  "attr_line":null,
-  "attr_boxplot":null,
+  "attr_line":"eobs_temperature,eobs_used_time_to_get_fix",
+  "attr_boxplot":"eobs_battery_voltage,gps_dop,gps_satellite_count",
   "use_local_time":true,
-  "pdfMode":"perAttrib"
+  "pdfMode":"perTrack"
 }

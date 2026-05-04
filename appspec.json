@@ -9,21 +9,14 @@
   "type": "CHECKBOX"
 },
 {
-  "id": "add_vot",
-  "name": "Add battery voltage to previous plot",
-  "description" :"",  
-  "defaultValue": false,
-  "type": "CHECKBOX"
-},
-{
   "id": "bat_attr_prov",
-  "name": "Choose the attibute containing battery voltage",
-  "description": "If you cannot find the right attribute name here, please use the free text below",
+  "name": "To add battery voltage to previous plot choose the attibute containing battery voltage.",
+  "description": "OR enter attribute name in text field below",
   "type": "DROPDOWN",
-  "defaultValue": "",
+  "defaultValue": "no_selection",
   "options": [{
-      "value": "",
-      "displayText": ""
+      "value": "no_selection",
+      "displayText": "no selection"
     },
     {
       "value": "tag_voltage",
@@ -64,7 +57,7 @@
  },
 {
       "id": "bat_attr",
-      "name": "Column name of battery voltage in the data set",
+      "name": "OR provide column name of battery voltage in the data set to add to the previous plot if not present in the selection above.",
       "description": "Provide the exact name of the column containing the battery voltage. If unsure of attribute names or spelling, please run the first App in your workflow and check the 'event_attributes' in the 'App Output Details' (green 'i'). For definitions of Movebank attributes please refer to the Movebank Attribute Dictionary (https://www.movebank.org/cms/movebank-content/movebank-attribute-dictionary).",
       "defaultValue": null,
       "type": "STRING"
@@ -122,17 +115,17 @@
 },  
 {
   "id": "pdfMode",
-  "name": "Structure of pdf",
+  "name": "Grouping of plots in PDF",
   "description": "",
   "defaultValue": "perTrack",
   "type": "RADIOBUTTONS",
   "options": [{
       "value": "perTrack",
-      "displayText": "Create pdf grouping plot per track" 
+      "displayText": "Group plots per track" 
     },
     {
       "value": "perAttrib",
-      "displayText": "Create pdf grouping plots per attribute"
+      "displayText": "Group plots per attribute"
     }]
 } 
   ],

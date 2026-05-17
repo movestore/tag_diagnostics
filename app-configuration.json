@@ -4,8 +4,8 @@
   "bat_attr":null,
   "plot_fix_rate":true,
   "unts_fix_rate":"min",
-  "attr_line":"eobs_temperature,eobs_used_time_to_get_fix",
-  "attr_boxplot":"eobs_battery_voltage,gps_dop,gps_satellite_count",
+  "attr_line":"eobs_speed_accuracy_estimate,eobs_temperature",
+  "attr_boxplot":"eobs_used_timeto_get_fix,gps_dop,gps_satellite_count",
   "use_local_time":true,
   "pdfMode":"perTrack"
 }

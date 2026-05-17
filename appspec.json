@@ -139,7 +139,8 @@
       {"name": "lutz"},
       {"name": "rlang"},
       {"name": "units"},
-      {"name": "lubridate"}
+      {"name": "lubridate"},
+      {"name": "grid"}
     ]
   },
   "license": {

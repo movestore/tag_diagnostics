@@ -154,10 +154,10 @@ rFunction <- function(data,
           geom_point(data = trk, aes(x = mt_time(trk)-hours(12), y = a + b * as.numeric(.data[[batvot_ok]])), shape = 4, colour = color_voltage) +
           geom_path(data = data_daily, aes(x = date, y=n_fix), linewidth=0.1, alpha=0.8)+
           geom_point(data = data_daily, aes(x = date, y =n_fix))+
-          scale_y_continuous(name   = "Number GPS fixes per day", limits = c(0, y_max), sec.axis = sec_axis(trans = ~ ( . - a ) / b, name  = bat_label)) +
+          scale_y_continuous(name   = "Number GPS fixes per day", limits = c(0, y_max), sec.axis = sec_axis(transform = ~ ( . - a ) / b, name  = bat_label)) +
           labs(title = paste0("Number of GPS fixes per day and ",batvot_ok), subtitle = paste("Track: ", id))+
           theme_bw()+
-          theme(axis.title.y.right = element_text(colour = color_voltage))+
+          theme(axis.title.y.right = element_text(colour = color_voltage),  axis.text.y.right=element_text(colour = color_voltage))+
           xlab("")
         
       } else {

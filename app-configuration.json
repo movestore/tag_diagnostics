@@ -1,11 +1,11 @@
 {
-  "plot_nb_lcs":true,
-  "bat_attr_prov":"eobs_battery_voltage",
+  "plot_nb_lcs":false,
+  "bat_attr_prov":"tag_voltage",
   "bat_attr":null,
-  "plot_fix_rate":true,
-  "unts_fix_rate":"min",
-  "attr_line":"eobs_speed_accuracy_estimate,eobs_temperature",
-  "attr_boxplot":"eobs_used_timeto_get_fix,gps_dop,gps_satellite_count",
-  "use_local_time":true,
+  "plot_fix_rate":false,
+  "unts_fix_rate":"hour",
+  "attr_line": "sigfox_rssi",
+  "attr_boxplot":"sigfox_rssi",
+  "use_local_time":false,
   "pdfMode":"perTrack"
 }

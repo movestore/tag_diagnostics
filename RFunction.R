@@ -64,6 +64,21 @@ library(grid)
 # 
 # names(voc[grep("mV",voc)])
 
+## ToDo plot all tags
+
+# dtt <- readRDS("~/Downloads/test__Workflow_Instance_002__Movebank_Location__2026-04-26_19-18-22.rds")
+# dtt$date <- as.Date(mt_time(dtt))
+# data_daily <- dtt %>% group_by(mt_track_id()) |> count(date, name = "n_fix") |> sf::st_drop_geometry() %>% rename(TrackId=`mt_track_id()`)
+# 
+# ggplot() +
+#   geom_path(data = data_daily, aes(x = date, y=n_fix,color=TrackId), linewidth=0.1, alpha=0.8)+
+#   geom_point(data = data_daily, aes(x = date, y =n_fix, color=TrackId))+
+#   scale_y_continuous(name = "Number GPS fixes per day") +
+#   labs(title = "Number of GPS fixes", subtitle = paste("All track"))+
+#   theme_bw()+
+#   xlab("")
+
+
 
 rFunction <- function(data,
                       plot_nb_lcs,
@@ -169,7 +184,7 @@ rFunction <- function(data,
           theme_bw()+
           xlab("")
       }
-    }
+    }else{nb_volt <- NULL}
     ## fix rate
     if(plot_fix_rate){
       fixrt <- ggplot(trk) +
@@ -178,7 +193,7 @@ rFunction <- function(data,
         labs(title = "Fix rate (approx)", subtitle = paste("Track: ", id))+
         xlab("") +
         ylab("")
-    }
+    }else{fixrt <- NULL}
     
     ## other attr lines
     if(!is.null(attr_line_ok)){
@@ -219,8 +234,9 @@ rFunction <- function(data,
   })
   names(track_plots_list) <- names(data_L)
   
-  # remove NULL entries for tracks without plots
+  # remove NULL entries for tracks without plots, and plots set to FALSE
   track_plots_list <- Filter(Negate(is.null), track_plots_list)
+  track_plots_list <- lapply(track_plots_list, function(x){if (is.list(x)) {Filter(Negate(is.null), x)} else {x}}) 
   
   ## add study name to top of pdf
   study_name <- as.character(unique(mt_track_data(data)$name))

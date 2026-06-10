@@ -253,23 +253,60 @@ rFunction <- function(data,
     )
   }
   
+  study_name_valid <- gsub("[^A-Za-z0-9]+", "_", study_name)
+  study_name_valid <- gsub("_+", "_", study_name_valid)
   
-  # --- PDF creation logic ---------------------------------------------------
-  if (pdfMode == "perTrack") {
+  
+  
+  # --- helper functions ------------------------------------------------------
+  
+  get_pdf_dims <- function(n_plots) {
+    if (n_plots == 1) {
+      list(width = 21, height = 10, nrow = 2, ncol = 3)
+    } else if (n_plots == 2) {
+      list(width = 14, height = 5, nrow = 1, ncol = 2)
+    } else if (n_plots == 3) {
+      list(width = 21, height = 5, nrow = 1, ncol = 3)
+    } else if (n_plots == 4) {
+      list(width = 14, height = 10, nrow = 2, ncol = 2)
+    } else if (n_plots %in% c(5, 6)) {
+      list(width = 21, height = 10, nrow = 2, ncol = 3)
+    } else {
+      list(width = 21, height = 10, nrow = 2, ncol = 3)
+    }
+  }
+  
+  # flatten exactly one level, preserving grobs
+  flatten_grob_list <- function(x) {
+    unlist(x, recursive = FALSE, use.names = FALSE)
+  }
+  
+  # this MUST return one grob/gtable, not a list
+  add_study_header <- function(page_grob, study_name) {
+    arrangeGrob(
+      grobs = list(
+        textGrob(
+          label = paste("Study ID:", study_name),
+          x = 0.01, y = 0.5,
+          just = c("left", "center"),
+          gp = gpar(fontsize = 16, fontface = "bold")
+        ),
+        page_grob
+      ),
+      ncol = 1,
+      heights = c(0.06, 0.94)
+    )
+  }
+  
+  save_pages_with_header <- function(page_grobs, filename, study_name, width, height) {
+    page_grobs <- flatten_grob_list(page_grobs)
+    page_grobs <- Filter(Negate(is.null), page_grobs)
     
-    # lm_rowwise <- matrix(1:(2 * 3), nrow = 2, ncol = 3, byrow = TRUE) # create matrix to fill by row and not default by column
-    # one multi-page PDF; per track, plots are consecutive, 2x3 grid
-    all_pages1 <- lapply(names(track_plots_list), function(id) {
-      # list of grobs for this track, in fixed order:
-      # nb_volt, fixrt, then attributes
-      grobs_id <- track_plots_list[[id]]
-      # marrangeGrob will paginate if more than 6 for a track
-      marrangeGrob(grobs = grobs_id, nrow = 2, ncol = 3)#, layout_matrix = lm_rowwise)
+    pages_with_header <- lapply(page_grobs, function(pg) {
+      add_study_header(pg, study_name = study_name)
     })
     
-    # prepend title page
-    all_pages <- do.call(c, all_pages1)
-    pages_with_header <- lapply(all_pages, add_study_header, study_name = study_name)
+    pages_with_header <- Filter(Negate(is.null), pages_with_header)
     
     final_pages <- marrangeGrob(
       grobs = pages_with_header,
@@ -277,59 +314,116 @@ rFunction <- function(data,
       ncol = 1
     )
     
-    ggsave(appArtifactPath("tag_diagnostics_plots_by_Track.pdf"), final_pages, width = 20, height = 10)
+    ggsave(
+      filename = appArtifactPath(filename),
+      plot = final_pages,
+      width = width,
+      height = height
+    )
+  }
+  
+  # --- PDF creation logic ----------------------------------------------------
+  if (pdfMode == "perTrack") {
+    
+    n_plots_track <- if (length(track_plots_list) > 0) {
+      length(track_plots_list[[1]])
+    } else {
+      0
+    }
+    
+    dims <- get_pdf_dims(n_plots_track)
+    
+    if (n_plots_track == 1) {
+      # one plot per track -> 6 tracks per page
+      all_track_plots <- lapply(track_plots_list, function(x) {
+        if (is.null(x) || length(x) == 0) return(NULL)
+        x[[1]]
+      })
+      all_track_plots <- Filter(Negate(is.null), all_track_plots)
+      
+      all_pages <- marrangeGrob(
+        grobs = all_track_plots,
+        nrow = 2,
+        ncol = 3
+      )
+      
+    } else {
+      all_pages1 <- lapply(names(track_plots_list), function(id) {
+        grobs_id <- track_plots_list[[id]]
+        marrangeGrob(
+          grobs = grobs_id,
+          nrow = dims$nrow,
+          ncol = dims$ncol
+        )
+      })
+      
+      all_pages <- flatten_grob_list(all_pages1)
+    }
+    
+    save_pages_with_header(
+      page_grobs = all_pages,
+      filename   = paste0(study_name_valid, "__tag_diagnostics_plots_by_Track.pdf"),
+      study_name = study_name,
+      width      = dims$width,
+      height     = dims$height
+    )
     
   } else if (pdfMode == "perAttrib") {
     
-    # collect per-attribute (including nb_volt, fixrt) across tracks
-    # 1) named vector of attribute keys per plot list
-    # nb_volt and fixrt are always the first two names
-    # any extra names are attributes
-    # build a long list of plots with tags
-    
-    # lm_rowwise <- matrix(1:(2 * 3), nrow = 2, ncol = 3, byrow = TRUE) # create matrix to fill by row and not default by column
     plot_long <- list()
     for (id in names(track_plots_list)) {
       pl <- track_plots_list[[id]]
       for (nm in names(pl)) {
-        key <- nm              # "nb_volt", "fixrt", or attribute name
-        plot_long[[length(plot_long) + 1]] <-
-          list(key = key, id = id, grob = pl[[nm]])
+        plot_long[[length(plot_long) + 1]] <- list(
+          key = nm,
+          id = id,
+          grob = pl[[nm]]
+        )
       }
     }
     
-    # unique keys to iterate over
     keys <- unique(vapply(plot_long, `[[`, character(1), "key"))
     
-    # one list element per key; each element is either a list of pages or NULL
+    n_per_key <- sapply(keys, function(k) {
+      sum(vapply(plot_long, function(x) x$key == k, logical(1)))
+    })
+    
+    max_plots_group <- if (length(n_per_key) > 0) max(n_per_key) else 0
+    dims <- get_pdf_dims(max_plots_group)
+    
     pages_by_key <- lapply(keys, function(k) {
       grobs_k <- lapply(plot_long, function(x) {
         if (x$key == k) x$grob else NULL
       })
       grobs_k <- Filter(Negate(is.null), grobs_k)
       
-      if (length(grobs_k) == 0) {
-        return(NULL)
+      if (length(grobs_k) == 0) return(NULL)
+      
+      if (length(grobs_k) == 1) {
+        marrangeGrob(grobs = grobs_k, nrow = 2, ncol = 3)
+      } else {
+        marrangeGrob(
+          grobs = grobs_k,
+          nrow = dims$nrow,
+          ncol = dims$ncol
+        )
       }
-      marrangeGrob(grobs = grobs_k, nrow = 2, ncol = 3)#, layout_matrix = lm_rowwise)
     })
     
-    # drop NULL keys
     pages_by_key <- Filter(Negate(is.null), pages_by_key)
-    all_pages <- do.call(c,pages_by_key)
+    all_pages <- flatten_grob_list(pages_by_key)
     
     if (length(all_pages) > 0) {
-      pages_with_header <- lapply(all_pages, add_study_header, study_name = study_name)
-      final_pages <- marrangeGrob(
-        grobs = pages_with_header,
-        nrow = 1,
-        ncol = 1
+      save_pages_with_header(
+        page_grobs = all_pages,
+        filename   = paste0(study_name_valid, "__tag_diagnostics_plots_by_Attribute.pdf"),
+        study_name = study_name,
+        width      = dims$width,
+        height     = dims$height
       )
-      ggsave(appArtifactPath("tag_diagnostics_plots_by_Attribute.pdf"), final_pages, width = 20, height = 10)
     } else {
       warning("No plots available for perAttrib pdfMode.")
     }
   }
-  
   return(data)
 }

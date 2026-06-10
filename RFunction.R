@@ -253,6 +253,8 @@ rFunction <- function(data,
     )
   }
   
+  study_name_valid <- gsub("[^A-Za-z0-9]+", "_", study_name)
+  study_name_valid <- gsub("_+", "_", study_name_valid)
   
   # --- PDF creation logic ---------------------------------------------------
   if (pdfMode == "perTrack") {
@@ -277,7 +279,7 @@ rFunction <- function(data,
       ncol = 1
     )
     
-    ggsave(appArtifactPath("tag_diagnostics_plots_by_Track.pdf"), final_pages, width = 20, height = 10)
+    ggsave(appArtifactPath(paste0(study_name_valid, "__tag_diagnostics_plots_by_Track.pdf")), final_pages, width = 21, height = 10)
     
   } else if (pdfMode == "perAttrib") {
     
@@ -325,7 +327,7 @@ rFunction <- function(data,
         nrow = 1,
         ncol = 1
       )
-      ggsave(appArtifactPath("tag_diagnostics_plots_by_Attribute.pdf"), final_pages, width = 20, height = 10)
+      ggsave(appArtifactPath(paste0(study_name_valid, "__tag_diagnostics_plots_by_Attribute.pdf")), final_pages, width = 21, height = 10)
     } else {
       warning("No plots available for perAttrib pdfMode.")
     }
